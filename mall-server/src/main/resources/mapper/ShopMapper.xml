@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.ShopMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Shop">
+        <id column="id" property="id"/>
+        <result column="commodityid" property="commodityid"/>
+        <result column="name" property="name"/>
+        <result column="praise" property="praise"/>
+        <result column="avatar" property="avatar"/>
+        <result column="checkbox" property="checkbox"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,commodityid, avatar, name, praise, checkbox
+    </sql>
+
+    <!-- 根据商品id查询店铺信息 -->
+    <select id="getShopInfo" resultType="com.zty.server.pojo.Shop">
+        select
+        s.id,
+        s.name,
+        s.avatar
+        from
+        shop s
+        where
+        s.commodityid = #{id}
+    </select>
+
+    <resultMap id="ShopAndCartMap" type="com.zty.server.pojo.Shop" extends="BaseResultMap">
+        <collection property="carts" ofType="com.zty.server.pojo.Cart">
+            <id column="cid" property="cartid"/>
+            <result column="useridCart" property="userid"/>
+            <result column="commodityidCart" property="commodityid"/>
+            <result column="commodiynameCart" property="commodiyname"/>
+            <result column="commoditypictureCart" property="commoditypicture"/>
+            <result column="unitpriceCart" property="unitprice"/>
+            <result column="amountCart" property="amount"/>
+            <result column="comboidCart" property="comboid"/>
+            <result column="combonameCart" property="comboname"/>
+            <result column="chooseCart" property="choose"/>
+            <result column="quantityCart" property="quantity"/>
+        </collection>
+    </resultMap>
+
+    <!-- 根据店铺id查询购物车商品信息 -->
+    <select id="selectShopAndCartInfo" resultMap="ShopAndCartMap">
+        SELECT
+        s.id,
+        s.`name`,
+        s.checkbox,
+        c.cartid As cid,
+        c.userid AS useridCart,
+        c.commodityid AS commodityidCart,
+        c.commodiyname AS commodiynameCart,
+        c.commoditypicture AS commoditypictureCart,
+        c.unitprice AS unitpriceCart,
+        c.amount AS amountCart,
+        c.comboid AS comboidCart,
+        c.comboname AS combonameCart,
+        c.choose AS chooseCart,
+        c.quantity AS quantityCart
+        FROM
+        shop s,
+        cart c
+        WHERE
+        s.id = c.shopid
+        AND c.userid = #{userId}
+    </select>
+</mapper>

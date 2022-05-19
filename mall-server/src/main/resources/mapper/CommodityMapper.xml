@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.CommodityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Commodity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="shop" property="shop"/>
+        <result column="picture" property="picture"/>
+        <result column="monthlysales" property="monthlysales"/>
+        <result column="quantity" property="quantity"/>
+        <result column="classificationid" property="classificationid"/>
+        <result column="subclassid" property="subclassid"/>
+        <result column="shopid" property="shopid"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, price, shop, picture, monthlysales, quantity, classificationid, subclassid, shopid
+    </sql>
+
+    <resultMap id="getCommodityAndShop" type="com.zty.server.pojo.Commodity" extends="BaseResultMap">
+        <collection property="shops" ofType="com.zty.server.pojo.Shop">
+            <id column="sid" property="id"/>
+            <result column="sname" property="name"/>
+        </collection>
+    </resultMap>
+
+    <!-- 按月销最大值查询前四条数据 -->
+    <select id="getCommodityOfFour" resultMap="getCommodityAndShop">
+        SELECT
+        c.id,
+        c.NAME,
+        c.price,
+        c.picture,
+        c.monthlysales,
+        s.id AS sid,
+        s.NAME AS sname
+        FROM
+        commodity c,
+        shop s
+        WHERE
+        c.shopid = s.id
+        ORDER BY
+        monthlysales DESC
+        LIMIT 4
+    </select>
+
+    <!-- 根据id查询商品信息 -->
+    <select id="getCommodityInfo" resultType="com.zty.server.pojo.Commodity">
+        SELECT
+        c.id,
+        c.NAME,
+        c.picture,
+        c.monthlysales,
+        c.quantity
+        FROM
+        commodity c
+        WHERE
+        c.id = #{id}
+    </select>
+</mapper>

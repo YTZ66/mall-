@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.EvaluateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Evaluate">
+        <id column="id" property="id"/>
+        <result column="productid" property="productid"/>
+        <result column="productname" property="productname"/>
+        <result column="order" property="order"/>
+        <result column="userid" property="userid"/>
+        <result column="anonymous" property="anonymous"/>
+        <result column="type" property="type"/>
+        <result column="grade" property="grade"/>
+        <result column="information" property="information"/>
+        <result column="blueprint" property="blueprint"/>
+        <result column="time" property="time"/>
+        <result column="reply" property="reply"/>
+        <result column="content" property="content"/>
+        <result column="replytime" property="replytime"/>
+        <result column="show" property="show"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, productid, productname, order, userid, anonymous, type, grade, information, blueprint, time, reply, content,
+        replytime, show
+    </sql>
+
+    <!-- 根据商品id查询商品中评评价数 -->
+    <select id="selectMidTypeById" resultType="Integer">
+        SELECT
+        COUNT( type )
+        FROM
+        evaluate
+        WHERE
+        evaluate.commodityid = #{id}
+        AND type = 0
+    </select>
+
+    <!-- 根据商品id查询商品好评评价数 -->
+    <select id="selectGoodTypeById" resultType="Integer">
+        SELECT
+        COUNT( type )
+        FROM
+        evaluate
+        WHERE
+        evaluate.commodityid = #{id}
+        AND type = 1
+    </select>
+
+    <!-- 根据商品id查询商品差评评价数 -->
+    <select id="selectBadTypeById" resultType="Integer">
+        SELECT
+        COUNT( type )
+        FROM
+        evaluate
+        WHERE
+        evaluate.commodityid = #{id}
+        AND type = -1
+    </select>
+
+    <resultMap id="EvaluateMap" type="com.zty.server.pojo.Evaluate" extends="BaseResultMap">
+        <collection property="commodity" ofType="com.zty.server.pojo.Commodity">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name"/>
+        </collection>
+        <collection property="userList" ofType="com.zty.server.pojo.User">
+            <id column="uid" property="id"/>
+            <result column="uname" property="name"/>
+            <result column="uavatar" property="avatar"/>
+        </collection>
+    </resultMap>
+    
+    <!-- 根据商品id或评价类型查询商品评价信息 -->
+    <select id="selectEvaluateByProductId" resultMap="EvaluateMap">
+        SELECT
+        u.id AS uid,
+        u.NAME AS uname,
+        u.avatar AS uavatar,
+        c.id AS cid,
+        c.NAME AS cname,
+        e.*
+        FROM
+        `user` u,
+        commodity c,
+        evaluate e
+        WHERE
+        c.id = e.commodityid
+        AND
+        u.id = e.userid
+        AND
+        c.id = #{id}
+        <if test="type != null">
+            AND e.type = #{type}
+        </if>
+    </select>
+</mapper>

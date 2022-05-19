@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.ClassificationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Classification">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="hierarchy" property="hierarchy"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, hierarchy
+    </sql>
+
+    <resultMap id="Classifications" type="com.zty.server.pojo.Classification" extends="BaseResultMap">
+        <collection property="subclass" ofType="com.zty.server.pojo.Classification">
+            <id column="id2" property="id"/>
+            <result column="name2" property="name"/>
+            <collection property="subclass" ofType="com.zty.server.pojo.Classification">
+                <id column="id3" property="id"/>
+                <result column="name3" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <!-- 分类列表查询 -->
+    <select id="getClassification" resultMap="Classifications">
+        SELECT
+        c1.id,
+        c1.NAME,
+        c2.id AS id2,
+        c2.NAME AS name2,
+        c3.id AS id3,
+        c3.NAME AS name3
+        FROM
+        classification c1,
+        classification c2,
+        classification c3
+        WHERE
+        c1.id = c2.hierarchy
+        AND c2.id = c3.hierarchy
+    </select>
+
+    <resultMap id="ClassificationAndCommodity" type="com.zty.server.pojo.Classification" extends="BaseResultMap">
+        <collection property="commodity" ofType="com.zty.server.pojo.Commodity">
+            <id column="id2" property="id"/>
+            <result column="name2" property="name"/>
+            <result column="price" property="price"/>
+            <result column="picture" property="picture"/>
+            <result column="monthlysales" property="monthlysales"/>
+            <collection property="shops" ofType="com.zty.server.pojo.Shop">
+                <id column="sid" property="id"/>
+                <result column="sname" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <!-- 根据分类表查询商品信息 -->
+    <select id="getClassificationAndCommodity" resultMap="ClassificationAndCommodity">
+        SELECT
+        c1.id,
+        c1.NAME,
+        c2.id AS id2,
+        c2.NAME AS name2,
+        s1.id AS sid,
+        s1.NAME AS sname,
+        c2.price,
+        c2.picture,
+        c2.monthlysales
+        FROM
+        classification c1,
+        commodity c2,
+        shop s1
+        WHERE
+        c1.id = c2.classificationid
+        AND c2.shopid = s1.id
+    </select>
+</mapper>

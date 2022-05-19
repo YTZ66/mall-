@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.ComboMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Combo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="commodityid" property="commodityid"/>
+        <result column="comboid" property="comboid"/>
+        <result column="choose" property="choose"/>
+        <result column="price" property="price"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, commodityid, comboid, choose, price
+    </sql>
+
+    <!-- 根据id查询套餐信息 -->
+    <select id="getComboInfo" resultType="com.zty.server.pojo.Combo">
+        SELECT
+        c.id,
+        c.comboid,
+        c.NAME,
+        c.choose,
+        c.price
+        FROM
+        combo c
+        WHERE
+        c.commodityid = #{id}
+    </select>
+</mapper>

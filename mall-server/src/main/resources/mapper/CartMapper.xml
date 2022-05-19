@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.CartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Cart">
+        <id column="cartid" property="cartid"/>
+        <result column="userid" property="userid"/>
+        <result column="commodityid" property="commodityid"/>
+        <result column="commodiyname" property="commodiyname"/>
+        <result column="commoditypicture" property="commoditypicture"/>
+        <result column="shopid" property="shopid"/>
+        <result column="shopname" property="shopname"/>
+        <result column="unitprice" property="unitprice"/>
+        <result column="amount" property="amount"/>
+        <result column="comboid" property="comboid"/>
+        <result column="comboNameid" property="comboNameid"/>
+        <result column="comboname" property="comboname"/>
+        <result column="choose" property="choose"/>
+        <result column="quantity" property="quantity"/>
+        <result column="checkbox" property="checkbox"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        cartid, userid, commodityid, commodiyname, commoditypicture, shopid, shopname, unitprice, amount, comboid,
+        comboNameid, comboname, choose, quantity, checkbox
+    </sql>
+
+    <!-- 根据购物车id修改购物车金额数量 -->
+    <update id="updateCartAndAmountAndQuantity">
+        update cart set amount=#{amount}, quantity=#{quantity}
+        where cartid=#{id}
+    </update>
+
+    <!-- 根据购物车id修改购物车套餐 -->
+    <update id="updateCartAndCombo">
+        update cart set
+        comboid=#{comboId},
+        comboNameid=#{comboNameId},
+        comboname=#{comboName},
+        amount=#{amount},
+        unitprice=#{unitprice}
+        where cartid=#{id}
+    </update>
+
+    <!-- 查询购物车信息 -->
+    <select id="selectCartById" resultType="com.zty.server.pojo.Cart">
+        select
+        *
+        from
+        cart c
+        where
+        c.cartid = #{cartId}
+    </select>
+</mapper>

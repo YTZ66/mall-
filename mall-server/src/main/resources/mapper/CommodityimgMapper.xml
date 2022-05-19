@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zty.server.mapper.CommodityimgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zty.server.pojo.Commodityimg">
+        <id column="id" property="id"/>
+        <result column="img" property="img"/>
+        <result column="commodityid" property="commodityid"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, img, commodityid
+    </sql>
+
+    <!-- 根据id查询图片信息 -->
+    <select id="getCommodityimgInfo" resultType="com.zty.server.pojo.Commodityimg">
+        SELECT
+        c.id,
+        c.img
+        FROM
+        commodityimg c
+        WHERE
+        c.commodityid = 1
+    </select>
+</mapper>
